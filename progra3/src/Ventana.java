@@ -32,24 +32,24 @@ public class Ventana extends JFrame {
                 //se guarda el numero y la posicion al ser presionado el boton
                 String numeroIntroducido;
                 String posicionIntrudocida;
-                numeroIntroducido = JOptionPane.showInputDialog("Introduce el alto");
-                posicionIntrudocida = JOptionPane.showInputDialog("Introduce una posicion en x");
+                numeroIntroducido = JOptionPane.showInputDialog("Introduce el numero(altura de la linea)");
+                posicionIntrudocida = JOptionPane.showInputDialog("Introduce la  posicion en x");
 
                 if (numeroIntroducido.length() == 0 || posicionIntrudocida.length() == 0) {
-                    System.out.println("Ingrese valores plox");
+                    logger.error("Ingrese valores por favor");
                     return;
+
                 }
 
                 int alto = Integer.parseInt(numeroIntroducido);
                 int posicion = Integer.parseInt(posicionIntrudocida);
                 if (alto >= 0 && alto < 100 && posicion >= 0 && posicion < 100) {
-                    System.out.println("posicion: " + posicion);
-                    System.out.println("alto: " + alto);
+                    logger.info("posicion: " + posicion);
+                    logger.info("alto: " + alto);
                     lineasComp.addLinea(new Linea(posicion, alto));
 
                 } else {
                     logger.error("Los valores deben ser mayores o iguales 0 y menores a 100");
-                    System.err.println("Error");
                 }
             }
         });

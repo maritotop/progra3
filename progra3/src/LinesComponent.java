@@ -1,3 +1,6 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Collections;
@@ -5,7 +8,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 
 public class LinesComponent extends JComponent {
-
+    private Logger logger = LogManager.getRootLogger();
     public LinkedList<Linea> lineas = new LinkedList<>();
 
     private Color colorLineas = new Color(246, 0, 0);
@@ -20,6 +23,8 @@ public class LinesComponent extends JComponent {
             g.setColor(colorLineas);
             // Todo: verificar de pintar bien la linea
             g.drawLine(linea.getPosicion(), staticY, linea.getPosicion(), linea.getAlto());
+            logger.info("Se pinto la linea");
+
         }
     }
 
@@ -33,9 +38,10 @@ public class LinesComponent extends JComponent {
         // Todo: reemplazar el if/else por el ".notify" del observer
         if (isOrdenado()) {
             repaint();
+            logger.info("las lineas estan ordenadas ");
         } else {
             // No esta ordenado
-            System.err.println("Desordenado kpo, ordenalo...");
+            logger.error("las lineas no estan ordenadas, ordenelas");
         }
     }
 
