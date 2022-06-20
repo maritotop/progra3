@@ -1,10 +1,4 @@
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.swing.*;
-import java.awt.*;
-
-public class Primero {
+public class main {
 
     public static void main(String[] args){
         //archivos a = new archivos();
@@ -16,4 +10,3 @@ public class Primero {
         i.setLocationRelativeTo(null);
     }
 }
-
