@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Observable;
 
 public class Arbol<E> extends Observable {
@@ -98,6 +100,21 @@ public class Arbol<E> extends Observable {
         return null;
     }
 
+    public List<E> getHijoById(String id) {
+        if (nodos.containsKey(id)) {
+            return  nodos.get(id).getHijo();
+        }
+
+        return null;
+    }
+
+    public E getPadreById(String id) {
+        if (nodos.containsKey(id)) {
+            return  nodos.get(id).getPadre().getContenido();
+        }
+
+        return null;
+    }
     public void eliminar(String idNodo) {
         if (!nodos.containsKey(idNodo)) {
             // log, exception
@@ -169,6 +186,17 @@ public class Arbol<E> extends Observable {
 
         public Lista<Nodo<E>> getHijos() {
             return hijos;
+        }
+
+        public List<E> getHijo() {
+            Lista<Nodo<E>> g=hijos;
+            List<E> val=new ArrayList<>();
+            int to=g.getTamaño();
+            for (int i=0; i<to; i++){
+                val.add(g.get(i).getContenido());
+            }
+
+            return val;
         }
 
         public String getId() {
