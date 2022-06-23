@@ -17,10 +17,10 @@ import java.util.Random;
 
 public class GestorCarpeta extends JFrame implements ActionListener, MouseListener {
 
-    private JLabel labelSubtitulo;
+    private JLabel label_id;
     private JButton btnGuardar;
-    private JTable tableEmpresa;
-    private JPanel cc;
+    private JTable tableCarpetas;
+    private JPanel panelTabla;
     private Arbol<ArbolCarpeta> modelo=new Arbol();
     public List<ArbolCarpeta> data=new ArrayList<>();
 
@@ -29,14 +29,14 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
         ArbolCarpeta raiz=new ArbolCarpeta("raiz", "","carpeta", 0);
         modelo.insertar("raiz",raiz,null);
         componentes();
-        tableEmpresa.addMouseListener(new MouseAdapter() {
+        tableCarpetas.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                System.out.println("entre");
-                tableEmpresaMouseClicked(e);
+                tableCarpetasMouseClicked(e);
             }
         });
 
-        this.getContentPane().setLayout(new BorderLayout());
+        this.getContentPane().setLayout(null);
+
 
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -73,31 +73,32 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
     public static void main(String[] args) {
         GestorCarpeta f = new GestorCarpeta();
+        f.setExtendedState(600);
         f.setVisible(true);
+
     }
 
     public void componentes(){
         ModeloArbol model = ModeloArbol.getSingleton();
-        labelSubtitulo = new JLabel();
-        labelSubtitulo.setBounds(20, 20, 260, 20);
+        label_id = new JLabel();
+        label_id.setBounds(20, 20, 260, 20);
         String p=modelo.getById("raiz").getId();
-        labelSubtitulo.setText(p);
-        add(labelSubtitulo);
+        label_id.setText(p);
+        add(label_id);
 
 
 
-        cc=datosTabla();
-        tableEmpresa.addMouseListener(new MouseAdapter() {
+        panelTabla=datosTabla();
+        tableCarpetas.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
-                System.out.println("entre");
-                tableEmpresaMouseClicked(e);
+                tableCarpetasMouseClicked(e);
             }
         });
 
-        cc.setBounds(20, 110, 450, 400);
+        panelTabla.setBounds(20, 110, 450, 400);
 
 
-        add(cc);
+        add(panelTabla);
 
 
 
@@ -126,43 +127,42 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
         try{
 
-            data=modelo.getHijoById(labelSubtitulo.getText().toString());
-            List<ArbolCarpeta> produtos=data;
-            System.out.println(produtos.size());
+            data=modelo.getHijoById(label_id.getText().toString());
+            List<ArbolCarpeta> listaHijos=data;
 
-            for (ArbolCarpeta produto : produtos) {
-                datos[0] = String.valueOf(produto.getId());
-                datos[1] = produto.getNombre();
-                datos[2] = produto.getTipo();
-                datos[3] = String.valueOf(produto.getTamano());
-                System.out.println(datos[0] +" "+ datos[1] );
+
+            for (ArbolCarpeta hijo : listaHijos) {
+                datos[0] = String.valueOf(hijo.getId());
+                datos[1] = hijo.getNombre();
+                datos[2] = hijo.getTipo();
+                datos[3] = String.valueOf(hijo.getTamano());
                 model.addRow(datos);
             }
-            tableEmpresa = new JTable(model);
+            tableCarpetas = new JTable(model);
             // Establecer el color del contenido de la tabla
-            tableEmpresa.setForeground (Color.BLACK); // color de fuente
-            tableEmpresa.setFont (new Font (null, Font.PLAIN, 14)); // estilo de fuente
-            tableEmpresa.setSelectionForeground (Color.DARK_GRAY); // color de fuente después de la selección
-            tableEmpresa.setSelectionBackground (Color.LIGHT_GRAY); // fondo de fuente después de la selección
-            tableEmpresa.setGridColor (Color.GRAY); // color de cuadrícula
+            tableCarpetas.setForeground (Color.BLACK); // color de fuente
+            tableCarpetas.setFont (new Font (null, Font.PLAIN, 14)); // estilo de fuente
+            tableCarpetas.setSelectionForeground (Color.DARK_GRAY); // color de fuente después de la selepanelTablaión
+            tableCarpetas.setSelectionBackground (Color.LIGHT_GRAY); // fondo de fuente después de la selepanelTablaión
+            tableCarpetas.setGridColor (Color.GRAY); // color de cuadrícula
 
             // Establecer el encabezado de la tabla
-            tableEmpresa.getTableHeader (). setFont (new Font (null, Font.BOLD, 14)); // Establece el estilo de fuente del nombre del encabezado de la tabla
-            tableEmpresa.getTableHeader (). setForeground (Color.RED); // Establece el color de fuente del nombre del encabezado de la tabla
-            tableEmpresa.getTableHeader (). setResizingAllowed (false); // Establecer para no permitir el cambio manual del ancho de columna
-            tableEmpresa.getTableHeader (). setReorderingAllowed (false); // Establecer para no permitir arrastrar para reordenar columnas
+            tableCarpetas.getTableHeader (). setFont (new Font (null, Font.BOLD, 14)); // Establece el estilo de fuente del nombre del encabezado de la tabla
+            tableCarpetas.getTableHeader (). setForeground (Color.RED); // Establece el color de fuente del nombre del encabezado de la tabla
+            tableCarpetas.getTableHeader (). setResizingAllowed (false); // Establecer para no permitir el cambio manual del ancho de columna
+            tableCarpetas.getTableHeader (). setReorderingAllowed (false); // Establecer para no permitir arrastrar para reordenar columnas
 
             // Establecer la altura de la línea
-            tableEmpresa.setRowHeight(30);
+            tableCarpetas.setRowHeight(30);
 
             // El ancho de la primera columna se establece en 40
-            tableEmpresa.getColumnModel().getColumn(0).setPreferredWidth(40);
+            tableCarpetas.getColumnModel().getColumn(0).setPreferredWidth(40);
 
             // Establezca el tamaño de la ventana gráfica del panel de desplazamiento (los datos de línea que excedan este tamaño requieren arrastrar la barra de desplazamiento para verlo)
-            tableEmpresa.setPreferredScrollableViewportSize(new Dimension(400, 300));
+            tableCarpetas.setPreferredScrollableViewportSize(new Dimension(400, 300));
 
             // Coloque la tabla en el panel de desplazamiento (el encabezado de la tabla se agregará automáticamente a la parte superior del panel de desplazamiento)
-            JScrollPane scrollPane = new JScrollPane(tableEmpresa);
+            JScrollPane scrollPane = new JScrollPane(tableCarpetas);
 
             // Agregar panel de desplazamiento al panel de contenido
 
@@ -177,31 +177,30 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
         return pan;
     }
 
-    private void tableEmpresaMouseClicked(MouseEvent evt) {
-        System.out.println("entre");
+    private void tableCarpetasMouseClicked(MouseEvent evt) {
         JTable source = (JTable)evt.getSource();
         int row = source.rowAtPoint( evt.getPoint() );
         String id = source.getModel().getValueAt(row, 0)+"";
-        String no = source.getModel().getValueAt(row, 1)+"";
         ArbolCarpeta r= modelo.getById(id);
         if(r.getTipo()==null){
-            labelSubtitulo.setText(r.getId());
-            remove(labelSubtitulo);
-            remove(cc);
+            //si entra y el tipo es nulo = es carpeta
+            label_id.setText(r.getId());
+            remove(label_id);
+            remove(panelTabla);
             //data.add()
-            cc=datosTabla();
-            tableEmpresa.addMouseListener(new MouseAdapter() {
+            panelTabla=datosTabla();
+            tableCarpetas.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    System.out.println("entre");
-                    tableEmpresaMouseClicked(e);
+
+                    tableCarpetasMouseClicked(e);
                 }
             });
-            cc.setBounds(20, 110, 450, 400);
+            panelTabla.setBounds(20, 110, 450, 400);
 
-            labelSubtitulo.setBounds(20, 20, 260, 20);
+            label_id.setBounds(20, 20, 260, 20);
 
-            add(cc);
-            add(labelSubtitulo);
+            add(panelTabla);
+            add(label_id);
 
             setVisible(true);
 
@@ -236,28 +235,26 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
     public void actionPerformed(ActionEvent e) {
 
 
-
-        System.out.println(e.getSource().toString());
         if(e.getSource().equals(btnGuardar)){
 
-            ArbolCarpeta p= modelo.getPadreById(labelSubtitulo.getText());
-            labelSubtitulo.setText(p.getId());
-            remove(labelSubtitulo);
-            remove(cc);
+            ArbolCarpeta p= modelo.getPadreById(label_id.getText());
+            label_id.setText(p.getId());
+            remove(label_id);
+            remove(panelTabla);
             //data.add()
-            cc=datosTabla();
-            tableEmpresa.addMouseListener(new MouseAdapter() {
+            panelTabla=datosTabla();
+            tableCarpetas.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
-                    System.out.println("entre");
-                    tableEmpresaMouseClicked(e);
+
+                    tableCarpetasMouseClicked(e);
                 }
             });
-            cc.setBounds(20, 110, 450, 400);
+            panelTabla.setBounds(20, 110, 450, 400);
 
-            labelSubtitulo.setBounds(20, 20, 260, 20);
+            label_id.setBounds(20, 20, 260, 20);
 
-            add(cc);
-            add(labelSubtitulo);
+            add(panelTabla);
+            add(label_id);
 
             setVisible(true);
             // componentes();
@@ -298,21 +295,20 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
             try {
 
-                modelo.insertar(idRandom, v, labelSubtitulo.getText().toString());
+                modelo.insertar(idRandom, v, label_id.getText().toString());
 
-                remove(cc);
+                remove(panelTabla);
                 //data.add()
-                cc=datosTabla();
-                tableEmpresa.addMouseListener(new MouseAdapter() {
+                panelTabla=datosTabla();
+                tableCarpetas.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println("entre");
-                        tableEmpresaMouseClicked(e);
+                        tableCarpetasMouseClicked(e);
                     }
                 });
-                cc.setBounds(20, 110, 450, 400);
+                panelTabla.setBounds(20, 110, 450, 400);
 
 
-                add(cc);
+                add(panelTabla);
 
                 setVisible(true);
                 //ArbolDibujoPanel.getArch(v);
@@ -345,21 +341,21 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
             try {
 
-                modelo.insertar(idRandom, v, labelSubtitulo.getText().toString());
+                modelo.insertar(idRandom, v, label_id.getText().toString());
 
-                remove(cc);
+                remove(panelTabla);
                 //data.add()
-                cc=datosTabla();
-                tableEmpresa.addMouseListener(new MouseAdapter() {
+                panelTabla=datosTabla();
+                tableCarpetas.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
-                        System.out.println("entre");
-                        tableEmpresaMouseClicked(e);
+
+                        tableCarpetasMouseClicked(e);
                     }
                 });
-                cc.setBounds(20, 110, 450, 400);
+                panelTabla.setBounds(20, 110, 450, 400);
 
 
-                add(cc);
+                add(panelTabla);
 
                 setVisible(true);
                 //ArbolDibujoPanel.getArch(v);

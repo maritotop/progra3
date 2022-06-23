@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 
-public class Arbol<E> extends Observable {
+public class Arbol<E>  {
 
     private Nodo<E> raiz;
 
@@ -64,8 +64,6 @@ public class Arbol<E> extends Observable {
         if (idPadre == null) {
             raiz = nuevo;
             nodos.put(id, raiz);
-            this.setChanged();
-            this.notifyObservers();
             return;
         }
 
@@ -74,9 +72,6 @@ public class Arbol<E> extends Observable {
         padre.getHijos().insertar(nuevo);
         nuevo.setPadre(padre);
         nodos.put(id, nuevo);
-
-        this.setChanged();
-        this.notifyObservers();
     }
 
     @Override
@@ -124,22 +119,16 @@ public class Arbol<E> extends Observable {
         Nodo<E> objNodo = nodos.get(idNodo);
         if (objNodo == raiz) {
             raiz = null;
-            this.setChanged();
-            this.notifyObservers();
             return;
         }
 
         Nodo<E> padre = objNodo.getPadre();
         padre.getHijos().eliminar(objNodo);
 
-        this.setChanged();
-        this.notifyObservers();
     }
 
     public void actualizar(String idNodo, E o) {
         nodos.get(idNodo).setContenido(o);
-        this.setChanged();
-        this.notifyObservers();
 
     }
 
