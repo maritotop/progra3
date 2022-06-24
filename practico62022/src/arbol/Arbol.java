@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Observable;
+
 
 public class Arbol<E>  {
 
@@ -25,37 +25,8 @@ public class Arbol<E>  {
         nodos = new HashMap<>();
     }
 
-    public Arbol(File f, LectorNodo lector) throws FileNotFoundException, IOException {
-        
-        leerDeArchivo(f, lector);
-    }
+
     
-    public void leerDeArchivo(File f, LectorNodo lector) throws FileNotFoundException, IOException {
-        nodos = new HashMap<>();
-        raiz = null;
-        
-        FileReader fr = new FileReader(f);
-        BufferedReader br = new BufferedReader(fr);
-        String linea = "";
-        while (br.ready()) {
-            linea = br.readLine();
-            if (linea.isEmpty())
-                continue;
-            
-            String[] datos = linea.split("-");
-            
-            String id = datos[0];
-            
-            String idPadre = null;
-            if (datos.length == 3)
-                idPadre = datos[2];
-            E c = (E) lector.crearObjeto(datos[1]);
-            
-            this.insertar(id, c, idPadre);
-        }
-        br.close();
-        fr.close();
-    }
 
     public void insertar(String id, E c, String idPadre) {
 
@@ -95,6 +66,7 @@ public class Arbol<E>  {
         return null;
     }
 
+
     public List<E> getHijoById(String id) {
         if (nodos.containsKey(id)) {
             return  nodos.get(id).getHijo();
@@ -110,27 +82,8 @@ public class Arbol<E>  {
 
         return null;
     }
-    public void eliminar(String idNodo) {
-        if (!nodos.containsKey(idNodo)) {
-            // log, exception
-            return;
-        }
 
-        Nodo<E> objNodo = nodos.get(idNodo);
-        if (objNodo == raiz) {
-            raiz = null;
-            return;
-        }
 
-        Nodo<E> padre = objNodo.getPadre();
-        padre.getHijos().eliminar(objNodo);
-
-    }
-
-    public void actualizar(String idNodo, E o) {
-        nodos.get(idNodo).setContenido(o);
-
-    }
 
     class Nodo<E> {
 

@@ -5,6 +5,9 @@ import arbol.ArbolCarpeta;
 import arbol.Lista;
 import com.sun.glass.events.KeyEvent;
 import modelo.ModeloArbol;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -23,11 +26,15 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
     private JPanel panelTabla;
     private Arbol<ArbolCarpeta> modelo=new Arbol();
     public List<ArbolCarpeta> data=new ArrayList<>();
+    private ArbolCarpeta actual;
+    private static Logger logger = LogManager.getRootLogger();
 
     public GestorCarpeta() {
         ModeloArbol model = ModeloArbol.getSingleton();
         ArbolCarpeta raiz=new ArbolCarpeta("raiz", "","carpeta", 0);
+        actual=raiz;
         modelo.insertar("raiz",raiz,null);
+
         componentes();
         tableCarpetas.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
@@ -75,6 +82,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
         GestorCarpeta f = new GestorCarpeta();
         f.setExtendedState(600);
         f.setVisible(true);
+        logger.info("Start");
 
     }
 
@@ -127,7 +135,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
         try{
 
-            data=modelo.getHijoById(label_id.getText().toString());
+            data=modelo.getHijoById(actual.getId());
             List<ArbolCarpeta> listaHijos=data;
 
 
@@ -137,6 +145,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
                 datos[2] = hijo.getTipo();
                 datos[3] = String.valueOf(hijo.getTamano());
                 model.addRow(datos);
+                logger.info(datos);
             }
             tableCarpetas = new JTable(model);
             // Establecer el color del contenido de la tabla
@@ -182,9 +191,13 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
         int row = source.rowAtPoint( evt.getPoint() );
         String id = source.getModel().getValueAt(row, 0)+"";
         ArbolCarpeta r= modelo.getById(id);
+        actual=r;
         if(r.getTipo()==null){
             //si entra y el tipo es nulo = es carpeta
-            label_id.setText(r.getId());
+            logger.info("selecciono una carpeta");
+            label_id.setText(r.getNombre());
+
+            
             remove(label_id);
             remove(panelTabla);
             //data.add()
@@ -236,13 +249,15 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
 
         if(e.getSource().equals(btnGuardar)){
-
+            logger.info("boton guardar click");
             ArbolCarpeta p= modelo.getPadreById(label_id.getText());
             label_id.setText(p.getId());
             remove(label_id);
             remove(panelTabla);
+            logger.info("datos quitados");
             //data.add()
             panelTabla=datosTabla();
+            logger.info("datos agregados");
             tableCarpetas.addMouseListener(new MouseAdapter() {
                 public void mouseClicked(MouseEvent e) {
 
@@ -256,7 +271,9 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
             add(panelTabla);
             add(label_id);
 
+
             setVisible(true);
+            logger.info("se cargaron los datos");
             // componentes();
         }
 
@@ -275,6 +292,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
             File archivo = file.getSelectedFile();
             String path= archivo.getAbsolutePath();
             String nombre= archivo.getName().substring(path.lastIndexOf(":")-1);
+            logger.info("archivo leido");
 
             String extension = archivo.getName();
             int PosicionDelPunto = extension.indexOf(".");
@@ -284,6 +302,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
             String banco = "abcdefghijklmnopqrstuvwxyz01234567890";
             String idRandom= "";
 
+
             for (int x=0; x <=9; x++){
                 Random rand = new Random();
                 int indiceAleatorio = rand.nextInt( banco.length()-1);
@@ -292,16 +311,17 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
             }
 
             ArbolCarpeta v=new ArbolCarpeta(idRandom,nombre,sDesdePrimerPunto,size.intValue());
+            logger.info("id:"+idRandom+"agregado");
 
             try {
 
-                modelo.insertar(idRandom, v, label_id.getText().toString());
-
+                modelo.insertar(nombre, v, actual.getId());
                 remove(panelTabla);
                 //data.add()
                 panelTabla=datosTabla();
                 tableCarpetas.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
+                        logger.info("click en metodo para leer archivo");
                         tableCarpetasMouseClicked(e);
                     }
                 });
@@ -314,6 +334,7 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
                 //ArbolDibujoPanel.getArch(v);
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "No pudo leer archivo");
+                logger.error("archivo no leido");
             }
         }
 
@@ -341,11 +362,12 @@ public class GestorCarpeta extends JFrame implements ActionListener, MouseListen
 
             try {
 
-                modelo.insertar(idRandom, v, label_id.getText().toString());
+                modelo.insertar(idRandom, v, actual.getId());
 
                 remove(panelTabla);
                 //data.add()
                 panelTabla=datosTabla();
+                logger.info("se agrego la carpeta");
                 tableCarpetas.addMouseListener(new MouseAdapter() {
                     public void mouseClicked(MouseEvent e) {
 

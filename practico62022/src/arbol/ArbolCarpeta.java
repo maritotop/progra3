@@ -29,6 +29,8 @@ public class ArbolCarpeta {
     private final String tipo;
     private final int tamano;
 
+
+
     @Override
     public String toString() {
         return "ArbolCarpeta{" +
