@@ -15,11 +15,11 @@ import java.util.logging.Logger;
 
 public class Connect {
     private static Connection conn;
-    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String DRIVER = "org.mariadb.jdbc.Driver";
     private static final String USER = "root";
-    private static final String PASS = "601232";
-    private static final String db = "elisabeth";
-    private static final String URL = "jdbc:mysql://localhost/"+db+"";
+    private static final String PASS = "";
+    private static final String db = "pro3abm";
+    private static final String URL = "jdbc:mariadb://localhost:3306/"+db;
     
     public Connect(){
         conn = null;
