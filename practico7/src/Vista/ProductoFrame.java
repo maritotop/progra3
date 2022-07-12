@@ -1,88 +1,82 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package vista;
 
-import dao.ProductoDAO;
-import model.Producto;
+package Vista;
+import DAO.ProductoDAO;
+import Model.Producto;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ProductoFrame extends JFrame implements ActionListener{
-
-    private JLabel labelNombres,labelCodigo,labelPrecio,labelCantidad,labelFecha_vencimiento;
+    private JLabel labelEnunciado,labelNombres,labelCodigo,labelPrecio,labelCantidad,labelFecha_vencimiento;
     private JTextField txtNombres,txtCodigo,txtPrecio,txtCantidad,txtFecha_vencimiento;
-    private JButton btnGuardar,btnCancelar;
+    private JButton btnGuardar,btnCancelar, btnActualizar, btnEliminar;
     private JTable tableProductos,jt;
     private JPanel panelTabla;
+    private int id_aux;
     private UtilDateModel model;
     private JDatePanelImpl datePanel;
     private JDatePickerImpl datePicker;
-    
-    public ProductoFrame(){
-       
-        componentes();
+    private static Logger logger = LogManager.getRootLogger();
 
+    public ProductoFrame(){
+        componentes();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400,450); // Tamaño de la Ventana Ancho y Largo
+        setSize(700,700); // Tamaño de la Ventana Ancho y Largo
         setLocationRelativeTo(null); // Centra la ventana en el monitor
         setLayout(null); // elimina toda plantilla.
         setResizable(false); // eviata que se pueda modificar el tamaño de ventana
         setVisible(true); // hace visible la ventana
-        setTitle("  ** Módulo de Registros **"); // Le pone un titulo a la ventana
-   
+        setTitle("  ** Modulo de productos **"); // Le pone un titulo a la ventana
     }
 
     private JPanel datosTabla() {
-            
         JPanel pan = new JPanel();
         DefaultTableModel model = new DefaultTableModel();
+        model.addColumn( "ID");
         model.addColumn("Nombre");
         model.addColumn("Codigo");
         model.addColumn("Precio");
         model.addColumn("Cantidad");
         model.addColumn("Fecha de vencimiento");
-        String []datos = new String[4];
-
+        String []datos = new String[6];
         try{
             ProductoDAO productoDAO = new ProductoDAO();
             List<Producto> data;
             data=productoDAO.read();
-
-
             for (Producto producto : data) {
-                datos[0] = producto.getNombre();
-                datos[1] = producto.getCodigo();
-                datos[2] = producto.getPrecio();
-                datos[3] = String.valueOf(producto.getCantidad());
-                datos[4] = String.valueOf(producto.getFecha_vencimiento());
+                datos[0] = String.valueOf(producto.getId());
+                datos[1] = producto.getNombre();
+                datos[2] = producto.getCodigo();
+                datos[3] = producto.getPrecio();
+                datos[4] = String.valueOf(producto.getCantidad());
+                datos[5] = producto.getFecha_vencimiento();
                 model.addRow(datos);
-            //    logger.info(datos);
+                logger.info(datos);
             }
             tableProductos = new JTable(model);
+
             // Establecer el color del contenido de la tabla
             tableProductos.setForeground (Color.BLACK); // color de fuente
-            tableProductos.setFont (new Font (null, Font.PLAIN, 14)); // estilo de fuente
+            tableProductos.setFont (new Font (null, Font.PLAIN, 10)); // estilo de fuente
             tableProductos.setSelectionForeground (Color.DARK_GRAY); // color de fuente después de la selepanelTablaión
             tableProductos.setSelectionBackground (Color.LIGHT_GRAY); // fondo de fuente después de la selepanelTablaión
             tableProductos.setGridColor (Color.GRAY); // color de cuadrícula
 
             // Establecer el encabezado de la tabla
-            tableProductos.getTableHeader (). setFont (new Font (null, Font.BOLD, 14)); // Establece el estilo de fuente del nombre del encabezado de la tabla
+            tableProductos.getTableHeader (). setFont (new Font (null, Font.BOLD, 10)); // Establece el estilo de fuente del nombre del encabezado de la tabla
             tableProductos.getTableHeader (). setForeground (Color.RED); // Establece el color de fuente del nombre del encabezado de la tabla
             tableProductos.getTableHeader (). setResizingAllowed (false); // Establecer para no permitir el cambio manual del ancho de columna
             tableProductos.getTableHeader (). setReorderingAllowed (false); // Establecer para no permitir arrastrar para reordenar columnas
@@ -94,29 +88,36 @@ public class ProductoFrame extends JFrame implements ActionListener{
             tableProductos.getColumnModel().getColumn(0).setPreferredWidth(40);
 
             // Establezca el tamaño de la ventana gráfica del panel de desplazamiento (los datos de línea que excedan este tamaño requieren arrastrar la barra de desplazamiento para verlo)
-            tableProductos.setPreferredScrollableViewportSize(new Dimension(400, 300));
+            tableProductos.setPreferredScrollableViewportSize(new Dimension(550, 80));
 
             // Coloque la tabla en el panel de desplazamiento (el encabezado de la tabla se agregará automáticamente a la parte superior del panel de desplazamiento)
             JScrollPane scrollPane = new JScrollPane(tableProductos);
 
             // Agregar panel de desplazamiento al panel de contenido
-
             pan.add(scrollPane);
-            // Establecer el panel de contenido en la ventana
-
-
 
         }catch(Exception e){
             JOptionPane.showMessageDialog(null,"No se encontraron coincidencias");
         }
         return pan;
     }
-
+    //Componentes en general setBounds
     public void componentes(){
+        panelTabla = datosTabla();
+        tableProductos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tableProductosMouseClicked(evt);
+            }
+        });
+        panelTabla.setBounds(20, 250, 580, 120);
+        add(panelTabla);
 
-       
         /*--------- Campos ---------*/
-       
+        labelEnunciado = new JLabel();
+        labelEnunciado.setBounds(20,20,400,20);
+        labelEnunciado.setText("Ingrese los datos del producto a registrar");
+        add(labelEnunciado);
+
         labelNombres = new JLabel(); // etiqueta
         labelNombres.setBounds(20, 50, 150,20);
         labelNombres.setText("Nombres");
@@ -166,18 +167,12 @@ public class ProductoFrame extends JFrame implements ActionListener{
         txtFecha_vencimiento.setBounds(20, 200, 250, 20);
         add(txtFecha_vencimiento);
 
-
-
-
-
         //PANEL DE LISTA
         tableProductos = new JTable();
-        tableProductos.setBounds(20, 250, 350, 100);
+        tableProductos.setBounds(20, 250, 570, 120);
         add(tableProductos);
 
-       
         /*---------- Botones ----------*/
-       
         btnGuardar = new JButton();
         btnGuardar.setBounds(100, 380, 100, 20);
         btnGuardar.setText("Guardar");
@@ -189,14 +184,43 @@ public class ProductoFrame extends JFrame implements ActionListener{
         btnCancelar.setText("Cancelar");
         btnCancelar.addActionListener(this);
         add(btnCancelar);
+
+        btnActualizar = new JButton();
+        btnActualizar.setBounds(100,420,100,20);
+        btnActualizar.setText("Actualizar");
+        btnActualizar.addActionListener(this);
+        add(btnActualizar);
+
+        btnEliminar = new JButton();
+        btnEliminar.setBounds(220,420,100,20);
+        btnEliminar.setText("Eliminar");
+        btnEliminar.addActionListener(this);
+        add(btnEliminar);
    
+    }
+
+    private void tableProductosMouseClicked(MouseEvent evt) {
+        logger.info("Entro a al producto");
+        JTable source = (JTable)evt.getSource();
+        int row = source.rowAtPoint( evt.getPoint() );
+        String id = source.getModel().getValueAt(row, 0)+"";
+        ProductoDAO r=new ProductoDAO();
+        int dd= Integer.parseInt(id);
+        id_aux= dd;
+        logger.info("id_aux=" + dd);
+        Producto s=r.readById(dd);
+        txtNombres.setText(s.getNombre());
+        txtCodigo.setText(s.getCodigo());
+        txtPrecio.setText(s.getPrecio());
+        txtCantidad.setText(String.valueOf(s.getCantidad()));
+        txtFecha_vencimiento.setText(String.valueOf(s.getFecha_vencimiento()));
+        JOptionPane.showMessageDialog(null, s);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-       
         if(e.getSource().equals(btnGuardar)){
-            System.out.println("Lanzamos una rutina para grabar los datos");
+            logger.info("Lanzamos una rutina para grabar los datos");
             ProductoDAO dd= new ProductoDAO();
             String nombre= txtNombres.getText();
             String codigo= txtCodigo.getText();
@@ -207,13 +231,66 @@ public class ProductoFrame extends JFrame implements ActionListener{
             dd.create(producto);
 //            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
 //                    txtCantidad.getText()),));
-            panelTabla=datosTabla();
-
+            removeAll();
+            dispose();
+            new ProductoFrame();
 
         }
+        if(e.getSource().equals(btnActualizar)){
+            if (id_aux==0){
+                JOptionPane.showMessageDialog(null,"Seleccione primero");
+            }else {
+                logger.info("Lanzamos una rutina para grabar los datos");
+                ProductoDAO dd = new ProductoDAO();
+                String nombre = txtNombres.getText();
+                String codigo = txtCodigo.getText();
+                double precio = Double.valueOf(txtPrecio.getText());
+                int cantidad = Integer.parseInt(txtCantidad.getText());
+                Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
+                Producto producto = new Producto(nombre, codigo, txtPrecio.getText(), cantidad, txtFecha_vencimiento.getText());
+                producto.setId(id_aux);
+                dd.update(producto);
+                id_aux = 0;
+//            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
+//                    txtCantidad.getText()),));
+
+                removeAll();
+                dispose();
+                new ProductoFrame();
+                //data.add()
+            }
+        }
+        if(e.getSource().equals(btnEliminar)){
+            if (id_aux==0){
+                JOptionPane.showMessageDialog(null,"Seleccione primero");
+            }else {
+            logger.info("Lanzamos una rutina para eliminar los datos");
+            ProductoDAO dd= new ProductoDAO();
+            String nombre= txtNombres.getText();
+            String codigo= txtCodigo.getText();
+            double precio= Double.valueOf(txtPrecio.getText());
+            int cantidad= Integer.parseInt(txtCantidad.getText());
+            Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
+            Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,txtFecha_vencimiento.getText());
+            producto.setId(id_aux);
+            dd.delete(producto);
+            id_aux=0;
+//            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
+//                    txtCantidad.getText()),));
+
+            removeAll();
+            dispose();
+            new ProductoFrame();
+            //data.add()
+            }
+        }
         if(e.getSource().equals(btnCancelar)){
-            txtCodigo.setText("");
             txtNombres.setText("");
+            txtCodigo.setText("");
+            txtPrecio.setText("");
+            txtCantidad.setText("");
+            txtFecha_vencimiento.setText("");
+            id_aux=0;
         }
        
     }
@@ -226,12 +303,12 @@ public class ProductoFrame extends JFrame implements ActionListener{
         }
         catch (ParseException ex)
         {
-            System.out.println(ex);
+                System.out.println(ex);
         }
         return fechaDate;
     }
-   
-} // fin de la clase Registro
+
+}
 
     
 

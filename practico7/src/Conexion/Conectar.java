@@ -1,5 +1,5 @@
 
-package coneccion;
+package Conexion;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -10,18 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author lenovo
- */
 public class Conectar {
-    
-   /* private static final String DRIVER = "org.h2.Driver";
-    private static final String USER = "eli";
-    private static final String PASS = "eli";
-    private static final String db = "reflexologia";
-    private static final String URL = "jdbc:h2:./basededatos/"+db+"";*/
-    
+
     private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
     private static final String USER = "root";
     private static final String PASS = "";

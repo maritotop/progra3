@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package DAO;
 
 
-import coneccion.Conectar;
-import coneccion.Connect;
+import Conexion.Connect;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import model.Producto;
+import Model.Producto;
 
 
 
@@ -46,8 +45,6 @@ public class ProductoDAO {
     }
 
     public List<Producto> read() {
-
-
         Connection con = Connect.getConnection();
         
         PreparedStatement stmt = null;
@@ -128,7 +125,7 @@ public class ProductoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE productos SET nombre = ? ,appaterno = ? ,apmaterno = ? ,fecha = ?,telefono=?, contrato=?, WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE productos SET nombre = ? ,codigo = ? ,precio = ? ,cantidad = ?,fecha_vencimiento=? WHERE id = ?");
             stmt.setString(1, p.getNombre());
             stmt.setString(2, p.getCodigo());
             stmt.setString(3, p.getPrecio());
@@ -137,9 +134,9 @@ public class ProductoDAO {
             stmt.setInt(6, p.getId());
             stmt.executeUpdate();
 
-            JOptionPane.showMessageDialog(null, "Actualizando con exito!");
+            JOptionPane.showMessageDialog(null, "Actualizado con exito!");
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao atualizar: " + ex);
+            JOptionPane.showMessageDialog(null, "Error al actualizar: " + ex);
         } finally {
             Connect.closeConnection(con, stmt);
         }
@@ -159,11 +156,40 @@ public class ProductoDAO {
 
             JOptionPane.showMessageDialog(null, "Borrado con exito!");
         } catch (SQLException ex) {
-            JOptionPane.showMessageDialog(null, "Erro ao excluir: " + ex);
+            JOptionPane.showMessageDialog(null, "Error al borrar: " + ex);
         } finally {
             Connect.closeConnection(con, stmt);
         }
 
     }
 
+    public Producto readById(int dd) {
+        Connection con = Connect.getConnection();
+
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        Producto producto = new Producto();
+
+        try {
+            stmt = con.prepareStatement("SELECT * FROM productos WHERE id=?");
+            stmt.setInt(1, dd);
+
+            rs = stmt.executeQuery();
+            rs.next();
+
+            producto.setId(rs.getInt("id"));
+            producto.setNombre(rs.getString("nombre"));
+            producto.setCodigo(rs.getString("codigo"));
+            producto.setPrecio(rs.getString("precio"));
+            producto.setCantidad(rs.getInt("cantidad"));
+            producto.setFecha_vencimiento(rs.getString("fecha_vencimiento"));
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ProductoDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            Connect.closeConnection(con, stmt, rs);
+        }
+
+        return producto;
+    }
 }

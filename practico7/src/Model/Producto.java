@@ -1,9 +1,19 @@
 
-package model;
-
-import java.util.Date;
+package Model;
 
 public class Producto {
+    @Override
+    public String toString() {
+        return "Producto{" +
+                "id=" + id +
+                ", cantidad=" + cantidad +
+                ", nombre='" + nombre + '\'' +
+                ", codigo='" + codigo + '\'' +
+                ", precio='" + precio + '\'' +
+                ", fecha_vencimiento='" + fecha_vencimiento + '\'' +
+                '}';
+    }
+
     public Producto() {
     }
 
