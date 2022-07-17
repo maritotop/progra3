@@ -6,10 +6,7 @@ import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
 import org.jdatepicker.impl.UtilDateModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Date;
 import java.util.List;
 import javax.swing.*;
@@ -31,15 +28,64 @@ public class ProductoFrame extends JFrame implements ActionListener{
     private JDatePickerImpl datePicker;
     private static Logger logger = LogManager.getRootLogger();
 
+
+
     public ProductoFrame(){
         componentes();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(700,700); // Tamaño de la Ventana Ancho y Largo
         setLocationRelativeTo(null); // Centra la ventana en el monitor
         setLayout(null); // elimina toda plantilla.
-        setResizable(false); // eviata que se pueda modificar el tamaño de ventana
+        setResizable(false); // evita que se pueda modificar el tamaño de ventana
         setVisible(true); // hace visible la ventana
         setTitle("  ** Modulo de productos **"); // Le pone un titulo a la ventana
+
+        txtPrecio.addKeyListener(new KeyAdapter()
+        {
+            public void keyTyped(KeyEvent e)
+            {
+                char caracter = e.getKeyChar();
+
+                // Verificar si la tecla pulsada no es un digito
+                if(((caracter < '0') ||
+                        (caracter > '9')) &&
+                        (caracter != '\b' /*corresponde a BACK_SPACE*/))
+                {
+                    e.consume();  // ignorar el evento de teclado
+                }
+            }
+        });
+        txtCantidad.addKeyListener(new KeyAdapter()
+        {
+            public void keyTyped(KeyEvent e)
+            {
+                char caracter = e.getKeyChar();
+
+                // Verificar si la tecla pulsada no es un digito
+                if(((caracter < '0') ||
+                        (caracter > '9')) &&
+                        (caracter != '\b' /*corresponde a BACK_SPACE*/))
+                {
+                    e.consume();  // ignorar el evento de teclado
+                }
+            }
+        });
+            //VALIDAR SOLO LETRAS
+//        txtNombres.addKeyListener(new KeyAdapter()
+//        {
+//            public void keyTyped(KeyEvent e)
+//            {
+//                char c = e.getKeyChar();
+//
+//                if((c<'a' || c>'z') && (c<'A' || c>'Z') && (c<'!' || c>'.')
+//                        && (c!=(char)KeyEvent.VK_SPACE))
+//                {
+//                    e.consume();
+//                }
+//            }
+//        });
+
+
     }
 
     private JPanel datosTabla() {
@@ -229,8 +275,6 @@ public class ProductoFrame extends JFrame implements ActionListener{
             Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
             Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,txtFecha_vencimiento.getText());
             dd.create(producto);
-//            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
-//                    txtCantidad.getText()),));
             removeAll();
             dispose();
             new ProductoFrame();
@@ -251,13 +295,9 @@ public class ProductoFrame extends JFrame implements ActionListener{
                 producto.setId(id_aux);
                 dd.update(producto);
                 id_aux = 0;
-//            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
-//                    txtCantidad.getText()),));
-
                 removeAll();
                 dispose();
                 new ProductoFrame();
-                //data.add()
             }
         }
         if(e.getSource().equals(btnEliminar)){
@@ -275,13 +315,10 @@ public class ProductoFrame extends JFrame implements ActionListener{
             producto.setId(id_aux);
             dd.delete(producto);
             id_aux=0;
-//            dd.create(new Producto(txtNombres.getText(),txtCodigo.getText(),,txtPrecio.getText()),
-//                    txtCantidad.getText()),));
-
             removeAll();
             dispose();
             new ProductoFrame();
-            //data.add()
+
             }
         }
         if(e.getSource().equals(btnCancelar)){
@@ -307,6 +344,7 @@ public class ProductoFrame extends JFrame implements ActionListener{
         }
         return fechaDate;
     }
+
 
 }
 
