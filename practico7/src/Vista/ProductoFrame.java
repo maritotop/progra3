@@ -2,9 +2,6 @@
 package Vista;
 import DAO.ProductoDAO;
 import Model.Producto;
-import org.jdatepicker.impl.JDatePanelImpl;
-import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.UtilDateModel;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Date;
@@ -16,17 +13,27 @@ import java.text.ParseException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ProductoFrame extends JFrame implements ActionListener{
-    private JLabel labelEnunciado,labelNombres,labelCodigo,labelPrecio,labelCantidad,labelFecha_vencimiento;
+public class ProductoFrame extends JFrame implements ActionListener, ItemListener {
+    private JLabel labelEnunciado,labelNombres,labelCodigo,labelPrecio,labelCantidad,labelFecha_vencimiento,
+    labelAnho, labelMes,labelDia;
     private JTextField txtNombres,txtCodigo,txtPrecio,txtCantidad,txtFecha_vencimiento;
-    private JButton btnGuardar,btnCancelar, btnActualizar, btnEliminar;
+    private JButton btnGuardar, btnActualizar, btnEliminar;
     private JTable tableProductos,jt;
     private JPanel panelTabla;
+    private JComboBox<String> comboAnho,comboMes,comboDia;
+
     private int id_aux;
-    private UtilDateModel model;
-    private JDatePanelImpl datePanel;
-    private JDatePickerImpl datePicker;
     private static Logger logger = LogManager.getRootLogger();
+
+
+    JLabel label = new JLabel("Selected Date:");
+    //create object of JTextField and declare it final
+    final JTextField text = new JTextField(20);
+    //create object of JButton
+    JButton b = new JButton("popup");
+    //create object of JPanel
+    JPanel p = new JPanel();
+    final JFrame f = new JFrame();
 
 
 
@@ -44,14 +51,13 @@ public class ProductoFrame extends JFrame implements ActionListener{
         {
             public void keyTyped(KeyEvent e)
             {
-                char caracter = e.getKeyChar();
-
-                // Verificar si la tecla pulsada no es un digito
-                if(((caracter < '0') ||
-                        (caracter > '9')) &&
-                        (caracter != '\b' /*corresponde a BACK_SPACE*/))
-                {
-                    e.consume();  // ignorar el evento de teclado
+                char c = e.getKeyChar();
+                if (((c < '0') || (c > '9')) && (c != KeyEvent.VK_BACK_SPACE)
+                        && (c != '.')) {
+                    e.consume();
+                }
+                if (c == '.' && txtCodigo.getText().contains(".")) {
+                    e.consume();
                 }
             }
         });
@@ -149,6 +155,7 @@ public class ProductoFrame extends JFrame implements ActionListener{
     }
     //Componentes en general setBounds
     public void componentes(){
+
         panelTabla = datosTabla();
         tableProductos.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -209,9 +216,90 @@ public class ProductoFrame extends JFrame implements ActionListener{
 //         datePanel = new JDatePanelImpl(model);
 //         datePicker = new JDatePickerImpl(datePanel);
 //        add(datePicker);
-        txtFecha_vencimiento = new  JTextField();
-        txtFecha_vencimiento.setBounds(20, 200, 250, 20);
-        add(txtFecha_vencimiento);
+//        txtFecha_vencimiento = new  JTextField();
+//        txtFecha_vencimiento.setBounds(20, 200, 250, 20);
+//        add(txtFecha_vencimiento);
+
+        labelAnho = new JLabel();
+        labelAnho.setBounds(150,190,50,20);
+        labelAnho.setText("Anho");
+        add(labelAnho);
+
+        comboAnho = new JComboBox();
+        comboAnho.setBounds(150,210,100,20);
+        comboAnho.addItem("2022");
+        comboAnho.addItem("2023");
+        comboAnho.addItem("2024");
+        comboAnho.addItem("2025");
+        comboAnho.addItem("2026");
+        add(comboAnho);
+        comboAnho.addItemListener(this);
+
+        labelMes = new JLabel();
+        labelMes.setBounds(270,190,50,20);
+        labelMes.setText("Mes");
+        add(labelMes);
+
+        comboMes = new JComboBox();
+        comboMes.setBounds(270,210,100,20);
+        comboMes.addItem("01");
+        comboMes.addItem("02");
+        comboMes.addItem("03");
+        comboMes.addItem("04");
+        comboMes.addItem("05");
+        comboMes.addItem("06");
+        comboMes.addItem("07");
+        comboMes.addItem("08");
+        comboMes.addItem("09");
+        comboMes.addItem("10");
+        comboMes.addItem("11");
+        comboMes.addItem("12");
+        add(comboMes);
+        comboMes.addItemListener(this);
+
+        labelDia = new JLabel();
+        labelDia.setBounds(390,190,50,20);
+        labelDia.setText("Dia");
+        add(labelDia);
+
+        comboDia = new JComboBox();
+        comboDia.setBounds(390,210,100,20);
+        comboDia.addItem("01");
+        comboDia.addItem("02");
+        comboDia.addItem("03");
+        comboDia.addItem("04");
+        comboDia.addItem("05");
+        comboDia.addItem("06");
+        comboDia.addItem("07");
+        comboDia.addItem("08");
+        comboDia.addItem("09");
+        comboDia.addItem("10");
+        comboDia.addItem("11");
+        comboDia.addItem("12");
+        comboDia.addItem("13");
+        comboDia.addItem("14");
+        comboDia.addItem("15");
+        comboDia.addItem("16");
+        comboDia.addItem("17");
+        comboDia.addItem("18");
+        comboDia.addItem("19");
+        comboDia.addItem("20");
+        comboDia.addItem("21");
+        comboDia.addItem("22");
+        comboDia.addItem("23");
+        comboDia.addItem("24");
+        comboDia.addItem("25");
+        comboDia.addItem("26");
+        comboDia.addItem("27");
+        comboDia.addItem("28");
+        comboDia.addItem("29");
+        comboDia.addItem("30");
+        comboDia.addItem("31");
+        add(comboDia);
+        comboDia.addItemListener(this);
+
+
+
 
         //PANEL DE LISTA
         tableProductos = new JTable();
@@ -225,11 +313,11 @@ public class ProductoFrame extends JFrame implements ActionListener{
         btnGuardar.addActionListener(this);
         add(btnGuardar);
 
-        btnCancelar = new JButton();
-        btnCancelar.setBounds(220, 380, 100, 20);
-        btnCancelar.setText("Cancelar");
-        btnCancelar.addActionListener(this);
-        add(btnCancelar);
+//        btnCancelar = new JButton();
+//        btnCancelar.setBounds(220, 380, 100, 20);
+//        btnCancelar.setText("Cancelar");
+//        btnCancelar.addActionListener(this);
+//        add(btnCancelar);
 
         btnActualizar = new JButton();
         btnActualizar.setBounds(100,420,100,20);
@@ -259,9 +347,18 @@ public class ProductoFrame extends JFrame implements ActionListener{
         txtCodigo.setText(s.getCodigo());
         txtPrecio.setText(s.getPrecio());
         txtCantidad.setText(String.valueOf(s.getCantidad()));
-        txtFecha_vencimiento.setText(String.valueOf(s.getFecha_vencimiento()));
+        String fecha = s.getFecha_vencimiento();
+        String[] parts = fecha.split("-");
+        String part1 = parts[0]; // 123
+        String part2 = parts[1]; // 654321
+        String part3 = parts[2]; // 654321
+
+        comboAnho.setSelectedItem(part1);
+        comboMes.setSelectedItem(part2);
+        comboDia.setSelectedItem(part3);
         JOptionPane.showMessageDialog(null, s);
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -272,8 +369,9 @@ public class ProductoFrame extends JFrame implements ActionListener{
             String codigo= txtCodigo.getText();
             double precio= Double.valueOf(txtPrecio.getText());
             int cantidad= Integer.parseInt(txtCantidad.getText());
-            Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
-            Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,txtFecha_vencimiento.getText());
+            String fecha_vencimiento = comboAnho.getSelectedItem().toString()+"-"+comboMes.getSelectedItem().toString()+
+                    "-"+comboDia.getSelectedItem().toString();
+            Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,String.valueOf(fecha_vencimiento));
             dd.create(producto);
             removeAll();
             dispose();
@@ -290,9 +388,9 @@ public class ProductoFrame extends JFrame implements ActionListener{
                 String codigo = txtCodigo.getText();
                 double precio = Double.valueOf(txtPrecio.getText());
                 int cantidad = Integer.parseInt(txtCantidad.getText());
-                Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
-                Producto producto = new Producto(nombre, codigo, txtPrecio.getText(), cantidad, txtFecha_vencimiento.getText());
-                producto.setId(id_aux);
+                String fecha_vencimiento = comboAnho.getSelectedItem().toString()+"-"+comboMes.getSelectedItem().toString()+
+                        "-"+comboDia.getSelectedItem().toString();
+                Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,String.valueOf(fecha_vencimiento));                producto.setId(id_aux);
                 dd.update(producto);
                 id_aux = 0;
                 removeAll();
@@ -310,8 +408,9 @@ public class ProductoFrame extends JFrame implements ActionListener{
             String codigo= txtCodigo.getText();
             double precio= Double.valueOf(txtPrecio.getText());
             int cantidad= Integer.parseInt(txtCantidad.getText());
-            Date fecha_vencimiento = ParseFecha(txtFecha_vencimiento.getText());
-            Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,txtFecha_vencimiento.getText());
+                String fecha_vencimiento = comboAnho.getSelectedItem().toString()+"-"+comboMes.getSelectedItem().toString()+
+                        "-"+comboDia.getSelectedItem().toString();
+                Producto producto =  new Producto(nombre,codigo,txtPrecio.getText(),cantidad,String.valueOf(fecha_vencimiento));                producto.setId(id_aux);
             producto.setId(id_aux);
             dd.delete(producto);
             id_aux=0;
@@ -321,31 +420,26 @@ public class ProductoFrame extends JFrame implements ActionListener{
 
             }
         }
-        if(e.getSource().equals(btnCancelar)){
-            txtNombres.setText("");
-            txtCodigo.setText("");
-            txtPrecio.setText("");
-            txtCantidad.setText("");
-            txtFecha_vencimiento.setText("");
-            id_aux=0;
-        }
-       
-    }
-    public static Date ParseFecha(String fecha)
-    {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
-        Date fechaDate = null;
-        try {
-            fechaDate = formato.parse(fecha);
-        }
-        catch (ParseException ex)
-        {
-                System.out.println(ex);
-        }
-        return fechaDate;
-    }
 
 
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getSource()==comboAnho) {
+            String seleccionado=(String)comboAnho.getSelectedItem();
+            setTitle(seleccionado);
+        }
+        if (e.getSource()==comboMes) {
+            String seleccionado=(String)comboMes.getSelectedItem();
+            setTitle(seleccionado);
+        }
+        if (e.getSource()==comboDia) {
+            String seleccionado=(String)comboDia.getSelectedItem();
+            setTitle(seleccionado);
+        }
+
+    }
 }
 
     
